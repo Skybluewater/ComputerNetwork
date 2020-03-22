@@ -53,6 +53,9 @@ bool WzSerialPort::open(const char* portname,
 
 	switch (parity) //校验位
 	{
+	case 0:
+		p.Parity = NOPARITY; //无校验
+		break;
 	case 1:
 		p.Parity = ODDPARITY; //奇校验
 		break;
