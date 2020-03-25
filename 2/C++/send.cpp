@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
@@ -60,4 +60,4 @@ int main()
         cout<<p2[i];
     }
     cout<<endl;
-}*/
+}

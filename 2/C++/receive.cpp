@@ -55,6 +55,7 @@ int main(){
     }
     if(flag==1){
         cout<<" 出错"<<endl;
+    }else{
+        cout<<" 正确"<<endl;
     }
-    cout<<" 正确"<<endl;
 }
