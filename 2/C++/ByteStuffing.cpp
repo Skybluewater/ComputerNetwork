@@ -2,7 +2,7 @@
 //  main.cpp
 //  Bytestuffing
 //
-//  Created by 崔程远 on 2020/3/26.
+//  Created by Ccy on 2020/3/26.
 //  Copyright © 2020 qc. All rights reserved.
 //
 

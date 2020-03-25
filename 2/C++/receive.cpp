@@ -2,7 +2,7 @@
 //  sender.cpp
 //  CRC
 //
-//  Created by 崔程远 on 2020/3/25.
+//  Created by Ccy on 2020/3/25.
 //  Copyright © 2020 qc. All rights reserved.
 //
 
