@@ -47,7 +47,13 @@ int main(){
         r[i]=p1[i];
     }
     CRC(p1, len);
-    cout<<"余数: ";
+    cout<<"CRC-Code: ";
+    for(int i=32;i<48;i++){
+        cout<<p1[i];
+    }
+    CRC(p1, len);
+    cout<<endl<<"余数: ";
+
     for(int i=0;i<16;i++){
         cout<<r[i];
         if(r[i]>0)
