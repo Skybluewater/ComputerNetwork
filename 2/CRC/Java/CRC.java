@@ -1,35 +1,33 @@
+import java.util.Arrays;
 import java.util.Scanner;
-import java.lang.Math;
 
 public class CRC {
-	private String gxStr = "1101";
+	private String gxStr = "10001000000100001";
 
 	public String GetRemainderStr(String dividendStr, String divisorStr) {
 		int dividendLen = dividendStr.length();
 		int divisorLen = divisorStr.length();
-		long dividend = Long.parseLong(dividendStr, 2);
-		long divisor = Long.parseLong(divisorStr, 2);
-		dividend = dividend << (divisorLen - 1);
-		divisor = divisor << (dividendLen - 1);
-		int sumLen = dividendLen + divisorLen - 1;
-		long flag = (long) Math.pow(2, sumLen - 1);
+		for (int i = 0; i < divisorLen - 1; i++) {
+			dividendStr += "0";
+		}
+
+		char str1[] = dividendStr.toCharArray();
+		char str2[] = divisorStr.toCharArray();
 
 		for (int i = 0; i < dividendLen; i++) {
-			// 判断补零后的帧最高位为1还是零
-			if ((dividend & flag) != 0) {
-				dividend = dividend ^ divisor;
-				divisor = divisor >> 1;
-			} else {
-				divisor = divisor >> 1;
+			if (str1[i] == '1') {
+				str1[i] = '0';
+				for (int j = 1; j < divisorLen; j++) {
+					if (str1[i + j] == str2[j]) {
+						str1[i + j] = '0';
+					} else {
+						str1[i + j] = '1';
+					}
+				}
 			}
-			// flag最高位的1右移
-			flag = flag >> 1;
 		}
-
-		String remainderStr = Long.toBinaryString(dividend);
-		while (remainderStr.length() < (divisorLen - 1)) {
-			remainderStr = "0" + remainderStr;
-		}
+		String remainderStr = Arrays.toString(str1).replaceAll(", ", "").substring(dividendLen,
+				dividendLen + divisorLen);
 		return remainderStr;
 	}
 
@@ -48,21 +46,25 @@ public class CRC {
 		int dataLen = dataStr.length();
 		int gxLen = gxStr.length();
 		data = data << (gxLen - 1);
-		System.out.println(Long.toBinaryString(data));
-		String sendFrame = Long.toBinaryString(data ^ remainder);
-		String crcStr = sendFrame.substring(dataLen);
+		String sendFrameStr = Long.toBinaryString(data ^ remainder);
+		while (sendFrameStr.length() < (dataLen + gxLen - 1)) {
+			sendFrameStr = "0" + sendFrameStr;
+		}
+		String crcStr = sendFrameStr.substring(dataLen);
 		System.out.println("生成的CRC-Code为: " + crcStr);
-		System.out.println("带校验和的发送帧为: " + sendFrame);
+		System.out.println("带校验和的发送帧为: " + sendFrameStr);
 		System.out.println();
-		return sendFrame;
+		return sendFrameStr;
 	}
 
 	public void Receive(String sendFrameStr) {
-		System.out.println("接收的数据信息二进制比特串为：" + sendFrameStr);
 		int sendFrameLen = sendFrameStr.length();
 		int gxLen = gxStr.length();
+		String dataStr = sendFrameStr.substring(0, sendFrameLen - gxLen + 1);
 		String crcStr = sendFrameStr.substring(sendFrameLen - gxLen + 1);
+		System.out.println("接收的数据信息二进制比特串为：" + dataStr);
 		System.out.println("生成的CRC-Code为: " + crcStr);
+
 		String remainderStr = GetRemainderStr(sendFrameStr, gxStr);
 		long remainder = Long.parseLong(remainderStr, 2);
 		System.out.println("余数为: " + remainder);
@@ -75,8 +77,8 @@ public class CRC {
 
 	public static void main(String[] args) {
 		CRC operation = new CRC();
-		String FrameStr = operation.Send();
-		operation.Receive(FrameStr);
+		String frameStr = operation.Send();
+		operation.Receive(frameStr);
 	}
 
 }
