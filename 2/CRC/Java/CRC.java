@@ -10,7 +10,7 @@ public class CRC {
 		for (int i = 0; i < divisorLen - 1; i++) {
 			dividendStr += "0";
 		}
-
+		// System.out.println(dividendStr);
 		char str1[] = dividendStr.toCharArray();
 		char str2[] = divisorStr.toCharArray();
 
@@ -26,7 +26,7 @@ public class CRC {
 				}
 			}
 		}
-		String remainderStr = Arrays.toString(str1).replaceAll(", ", "").substring(dividendLen,
+		String remainderStr = Arrays.toString(str1).replaceAll(", ", "").substring(dividendLen + 1,
 				dividendLen + divisorLen);
 		return remainderStr;
 	}
@@ -41,16 +41,9 @@ public class CRC {
 
 		String remainderStr = GetRemainderStr(dataStr, gxStr);
 
-		long remainder = Long.parseLong(remainderStr, 2);
-		long data = Long.parseLong(dataStr, 2);
-		int dataLen = dataStr.length();
-		int gxLen = gxStr.length();
-		data = data << (gxLen - 1);
-		String sendFrameStr = Long.toBinaryString(data ^ remainder);
-		while (sendFrameStr.length() < (dataLen + gxLen - 1)) {
-			sendFrameStr = "0" + sendFrameStr;
-		}
-		String crcStr = sendFrameStr.substring(dataLen);
+		String crcStr = remainderStr;
+		String sendFrameStr = dataStr + remainderStr;
+
 		System.out.println("生成的CRC-Code为: " + crcStr);
 		System.out.println("带校验和的发送帧为: " + sendFrameStr);
 		System.out.println();

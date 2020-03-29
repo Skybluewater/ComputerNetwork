@@ -33,15 +33,9 @@ class CRC:
 
         remainderStr = self.GetRemainderStr(dataStr, self.gxStr)
 
-        remainder = int(remainderStr, 2)
-        data = int(dataStr, 2)
-        dataLen = len(dataStr)
-        gxLen = len(self.gxStr)
-        data = data << (gxLen - 1)
-        sendFrameStr = bin(data ^ remainder).replace('0b', '')
-        while len(sendFrameStr) < (dataLen + gxLen - 1):
-            sendFrameStr = "0" + sendFrameStr
-        crcStr = sendFrameStr[dataLen: ]
+        crcStr = remainderStr
+        sendFrameStr = dataStr + remainderStr
+
         print("生成的CRC-Code为: " + crcStr)
         print("带校验和的发送帧为: " + sendFrameStr)
         print()
