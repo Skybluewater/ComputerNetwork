@@ -17,7 +17,7 @@ public class UDP3Sender {
 	private int recePort = 8888;
 	DatagramSocket ds;
 
-	private int dataLen = 5;
+	private int dataLen = 20;
 	private int sendFrameLen = 25;
 	private int receFramelen = 1;
 	private int serialPos = 0;
@@ -135,7 +135,7 @@ public class UDP3Sender {
 			byte[] data = new byte[dataLen];
 			while (true) {
 				flag = is.read(data);
-				if(flag == -1) {
+				if (flag == -1) {
 					byte[] sendFrame = new byte[sendFrameLen];
 					sendFrame[isEndPos] = 1;
 					DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
@@ -143,30 +143,29 @@ public class UDP3Sender {
 					System.out.println("文件全部发送完毕");
 					break;
 				}
-				
+
 				seq++;
-		
+
 				byte[] realData = new byte[flag];
 				System.arraycopy(data, 0, realData, 0, flag);
 				String binaryStr = getBinaryString(realData);
 				String crcStr = getCRCString(binaryStr);
-				
+
 				byte[] sendFrame = new byte[sendFrameLen];
 				sendFrame[serialPos] = (byte) nextFrameToSend;
 
 				for (int i = 0; i < flag; i++) {
 					sendFrame[i + dataStartPos] = data[i];
 				}
-				for(int i = flag; i < dataLen; i++) {
+				for (int i = flag; i < dataLen; i++) {
 					sendFrame[i + dataStartPos] = 0;
 				}
 
 				sendFrame[crcStartPos] = (byte) Integer.parseInt(crcStr.substring(0, 8), 2);
-				System.out.println((byte) Integer.parseInt(crcStr.substring(0, 8), 2));
 				sendFrame[crcEndPos] = (byte) Integer.parseInt(crcStr.substring(8, 16), 2);
 
 				sendFrame[isEndPos] = 0;
-				
+
 				boolean mark = false;
 				while (mark == false) {
 					if ((filterSeq - firstError) % filterError == 0) {
@@ -186,8 +185,8 @@ public class UDP3Sender {
 						Print(right);
 						filterSeq++;
 					}
-					
-					//调节传输速度
+
+					// 调节传输速度
 					TimeUnit.MILLISECONDS.sleep(500);
 
 					mark = waitForEvent();
