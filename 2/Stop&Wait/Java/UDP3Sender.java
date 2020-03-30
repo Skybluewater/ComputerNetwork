@@ -17,7 +17,7 @@ public class UDP3Sender {
 	private int recePort = 8888;
 	DatagramSocket ds;
 
-	private int dataLen = 20;
+	private int dataLen = 5;
 	private int sendFrameLen = 25;
 	private int receFramelen = 1;
 	private int serialPos = 0;
@@ -127,10 +127,10 @@ public class UDP3Sender {
 	public void Send() throws Exception {
 		try {
 			ds = new DatagramSocket(sendPort);
-			ds.setSoTimeout(1000);
+			ds.setSoTimeout(2000);
 			InetAddress address = InetAddress.getByName(null);
 
-			InputStream is = new FileInputStream(new File("D:\\desktop\\text.txt"));
+			InputStream is = new FileInputStream(new File("D:\\desktop\\test.txt"));
 			int flag = 0;
 			byte[] data = new byte[dataLen];
 			while (true) {
@@ -162,13 +162,8 @@ public class UDP3Sender {
 				}
 
 				sendFrame[crcStartPos] = (byte) Integer.parseInt(crcStr.substring(0, 8), 2);
+				System.out.println((byte) Integer.parseInt(crcStr.substring(0, 8), 2));
 				sendFrame[crcEndPos] = (byte) Integer.parseInt(crcStr.substring(8, 16), 2);
-				
-				if(seq == 37) {
-					for(int i = 0; i < dataLen + 2; i++) {
-						System.out.println(sendFrame[dataStartPos + i]);
-					}
-				}
 
 				sendFrame[isEndPos] = 0;
 				
@@ -176,7 +171,7 @@ public class UDP3Sender {
 				while (mark == false) {
 					if ((filterSeq - firstError) % filterError == 0) {
 						byte pre = sendFrame[crcEndPos - 1];
-						sendFrame[crcEndPos - 1] = (byte) (pre + 1);
+						sendFrame[crcEndPos - 1] = (byte) ((pre + 1) % 128);
 						DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
 						ds.send(dp);
 						Print(error);
@@ -193,7 +188,7 @@ public class UDP3Sender {
 					}
 					
 					//调节传输速度
-					//TimeUnit.MILLISECONDS.sleep(200);
+					TimeUnit.MILLISECONDS.sleep(500);
 
 					mark = waitForEvent();
 					if (mark == true) {
