@@ -174,7 +174,8 @@ int main(int argc, char* argv[])
 	}
 	serAddr.sin_family = AF_INET;
 	serAddr.sin_port = htons(8888);
-	serAddr.sin_addr.S_un.S_addr = INADDR_ANY;
+    inet_pton(AF_INET, "127.0.0.1", &serAddr.sin_addr.S_un.S_addr);
+	//serAddr.sin_addr.S_un.S_addr = INADDR_ANY;
 	if (bind(serSocket, (sockaddr*)&serAddr, sizeof(serAddr)) == SOCKET_ERROR)
 	{
 		printf("bind error !");
