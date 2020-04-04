@@ -14,6 +14,8 @@
 
 [Stop&wait UDP](https://wenku.baidu.com/view/a7f2f00803d8ce2f00662380.html)
 
+GBN真没得看，要不然写这么久呢，还不知道写的对不对，反正我不改了，C++的已经放上去了，就这样看着办吧
+
 Inet_aton问题解决方法见下
 
 inet_pton(AF_INET, "127.0.0.1", &siLocal.sin_addr.s_addr);
