@@ -3,7 +3,7 @@ import time
 import struct
 
 
-class UDP3Client:
+class UDPSender:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     clientAddress = ('127.0.0.1', 9999)
     serverAddress = ('127.0.0.1', 8888)
@@ -17,6 +17,8 @@ class UDP3Client:
     filterLost = 10
     firstError = 3
     firstLost = 8
+
+    ackPos = 0
 
     right = 0
     error = 1
@@ -65,14 +67,14 @@ class UDP3Client:
         except Exception:
             print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
             print("接收超时！")
+            print()
             flag = False
 
         if (flag == True):
             print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-            print("接收到确认帧，确认帧的确认序号为：%d" % receiveFrame[0])
+            print("接收到确认帧，确认帧的确认序号为：%d" % receiveFrame[self.ackPos])
             print()
 
-        print()
         return flag
 
     def Print(self, method):
@@ -119,29 +121,29 @@ class UDP3Client:
                 mark = False
                 while (mark == False):
                     if ((self.filterSeq - self.firstError) % self.filterError == 0):
-                        newSendFrame = sendFrame[: -1] + struct.pack('B', wrong)
-                        self.s.sendto(newSendFrame, self.serverAddress)
                         self.Print(self.error)
                         self.filterSeq += 1
+                        newSendFrame = sendFrame[: -1] + struct.pack('B', wrong)
+                        self.s.sendto(newSendFrame, self.serverAddress)
                     elif ((self.filterSeq - self.firstLost) % self.filterLost == 0):
                         self.Print(self.lost)
                         self.filterSeq += 1
                     else:
-                        self.s.sendto(sendFrame, self.serverAddress)
                         self.Print(self.right)
                         self.filterSeq += 1
-
-                    # 调节传输速度
-                    time.sleep(0.5)
+                        self.s.sendto(sendFrame, self.serverAddress)
 
                     mark = self.waitForEvent()
                     if (mark == True):
                         self.nextFrameToSend = (self.nextFrameToSend + 1) % 2
+
+                    # 调节传输速度
+                    time.sleep(0.5)
 
         f.close()
         self.s.close()
 
 
 if __name__ == '__main__':
-    operation = UDP3Client()
+    operation = UDPSender()
     frameStr = operation.Send()

@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UDP3Receiver {
+public class UDPReceiver {
 	private int sendPort = 8888;
 	private int recePort = 9999;
 	DatagramSocket ds;
@@ -68,14 +68,13 @@ public class UDP3Receiver {
 			ds = new DatagramSocket(sendPort);
 			InetAddress address = InetAddress.getByName(null);
 
-			OutputStream os = new FileOutputStream(new File("text.txt"));
+			OutputStream os = new FileOutputStream(new File("D:\\desktop\\copyText.txt"));
 
 			while (true) {
-				byte[] temp = new byte[receFrameLen];
-				DatagramPacket dp = new DatagramPacket(temp, temp.length);
+				byte[] receFrame = new byte[receFrameLen];
+				DatagramPacket dp = new DatagramPacket(receFrame, receFrame.length);
 				ds.receive(dp);
 
-				byte[] receFrame = dp.getData();
 				if (receFrame[isEndPos] == 1) {
 					System.out.println("文件全部接收完毕");
 					break;
@@ -100,13 +99,13 @@ public class UDP3Receiver {
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					System.out.println("当前时间为：" + df.format(t));
 					System.out.println("frame_expected的值为：" + frameExpected);
-					System.out.println("接收帧数据正确，发送帧序号为：" + serial);
+					System.out.println("接收帧数据正确，接收帧的发送帧序号：" + serial);
 
 					byte[] sendFrame = new byte[sendFrameLen];
-					sendFrame[0] = (byte) frameExpected;
+					sendFrame[0] = (byte) (1 - frameExpected);
 					DatagramPacket dp2 = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
 					ds.send(dp2);
-					System.out.println("已发送回确认帧，确认帧的确认序号为：" + frameExpected);
+					System.out.println("已发送回确认帧，确认帧的确认序号为：" + (1 - frameExpected));
 					System.out.println();	
 					
 					if ((byte) frameExpected == serial) {
@@ -134,7 +133,7 @@ public class UDP3Receiver {
 	}
 
 	public static void main(String[] args) throws Exception {
-		UDP3Receiver operation = new UDP3Receiver();
+		UDPReceiver operation = new UDPReceiver();
 		operation.Receive();
 	}
 

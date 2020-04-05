@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class UDP3Sender {
+public class UDPSender {
 	private int sendPort = 9999;
 	private int recePort = 8888;
 	DatagramSocket ds;
@@ -97,7 +97,6 @@ public class UDP3Sender {
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				System.out.println("当前时间为：" + df.format(t));
 				System.out.println("接收到确认帧，确认帧的确认序号为：" + receFrame[0]);
-				System.out.println();
 			}
 			System.out.println();
 
@@ -130,7 +129,7 @@ public class UDP3Sender {
 			ds.setSoTimeout(2000);
 			InetAddress address = InetAddress.getByName(null);
 
-			InputStream is = new FileInputStream(new File("D:\\desktop\\test.txt"));
+			InputStream is = new FileInputStream(new File("D:\\desktop\\text.txt"));
 			int flag = 0;
 			byte[] data = new byte[dataLen];
 			while (true) {
@@ -207,7 +206,7 @@ public class UDP3Sender {
 	}
 
 	public static void main(String[] args) throws Exception {
-		UDP3Sender operation = new UDP3Sender();
+		UDPSender operation = new UDPSender();
 		operation.Send();
 	}
 

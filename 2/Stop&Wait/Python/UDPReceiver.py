@@ -3,14 +3,15 @@ import time
 import struct
 
 
-class UDP3Server:
+class UDPReceiver:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     clientAddress = ('127.0.0.1', 9999)
     serverAddress = ('127.0.0.1', 8888)
     s.bind(serverAddress)
 
-    serialPos = 0
+    seqPos = 0
     dataStartPos = 1
+    crcLen = 2
     frameExpected = 0
 
     def getBinaryString(self, s):
@@ -56,22 +57,23 @@ class UDP3Server:
 
             if str(receiveFrame) != "b'end'":
 
-                binaryStr = self.getBinaryString(receiveFrame[1:].decode('ISO-8859-1'))
+                binaryStr = self.getBinaryString(receiveFrame[self.dataStartPos:].decode('ISO-8859-1'))
                 crcStr = self.getCRCString(binaryStr)
 
                 if (int(crcStr, 2) == 0):
                     print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
                     print("frame_expected的值为：%d" % self.frameExpected)
-                    print("接收帧数据正确，发送帧序号为：%d" % receiveFrame[0])
+                    print("接收帧数据正确，接收帧的发送帧序号为：%d" % receiveFrame[self.seqPos])
 
-                    sendFrame = struct.pack('B', self.frameExpected)
+                    ack = 1 - self.frameExpected
+                    sendFrame = struct.pack('B', ack)
                     self.s.sendto(sendFrame, self.clientAddress)
-                    print("已发送回确认帧，确认帧的确认序号为：%d" % self.frameExpected)
+                    print("已发送回确认帧，确认帧的确认序号为：%d" % ack)
                     print()
 
-                    if (receiveFrame[0] == self.frameExpected):
+                    if (receiveFrame[self.seqPos] == self.frameExpected):
                         self.frameExpected = (self.frameExpected + 1) % 2
-                        f.write(receiveFrame[1: -2])
+                        f.write(receiveFrame[self.dataStartPos: 0 - self.crcLen])
 
                 else:
                     print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
@@ -87,5 +89,5 @@ class UDP3Server:
 
 
 if __name__ == '__main__':
-    operation = UDP3Server()
+    operation = UDPReceiver()
     frameStr = operation.Receive()
