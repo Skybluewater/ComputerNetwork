@@ -1,10 +1,3 @@
-//
-//  main.cpp
-//  LS_Algorimth
-//
-//  Created by 崔程远 on 2020/4/24.
-//  Copyright © 2020 qc. All rights reserved.
-//
 
 #include <iostream>
 #include <stack>
