@@ -1,9 +1,11 @@
-class DV:
+class DVR:
     n = 5
-    adjMat = [[0, 7, 99, 99, 10], [7, 0, 1, 99, 8], [99, 1, 0, 2, 99],
-              [99, 99, 2, 0, 2], [10, 8, 99, 2, 0]]
-    oldTableMat = [[0, 7, 99, 99, 10], [7, 0, 1, 99, 8], [99, 1, 0, 2, 99],
-                   [99, 99, 2, 0, 2], [10, 8, 99, 2, 0]]
+    adjMat = [[0, 7, 99, 99, 10],
+              [7, 0, 1, 99, 8],
+              [99, 1, 0, 2, 99],
+              [99, 99, 2, 0, 2], 
+              [10, 8, 99, 2, 0]]
+    oldTableMat = [[0] * 5 for i in range(5)]
     nextRouter = [[' '] * 5 for i in range(5)]
     s = "ABCDE"
 
@@ -17,6 +19,7 @@ class DV:
     def printInitialRoutingTable(self):
         for i in range(self.n):
             for j in range(self.n):
+                self.oldTableMat[i][j] = self.adjMat[i][j]
                 if self.oldTableMat[i][j] != 99:
                     self.nextRouter[i][j] = self.s[j]
                 else:
@@ -36,9 +39,6 @@ class DV:
         while (True):
             time += 1
             newTableMat = [[0] * self.n for i in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    newTableMat[i][j] = self.oldTableMat[i][j]
             for i in range(self.n):
                 for j in range(self.n):
                     if i == j:
@@ -66,7 +66,7 @@ class DV:
                 break
 
 if __name__ == '__main__':
-    operation = DV()
+    operation = DVR()
     operation.printInitialRoutingTable()
     operation.printAfterUpdateRoutingTable()
     while(True):

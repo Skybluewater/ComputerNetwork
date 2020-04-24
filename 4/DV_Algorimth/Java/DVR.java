@@ -1,16 +1,19 @@
 import java.util.Scanner;
 
-public class DV {
+public class DVR {
 	// {{0, 7, 99, 99, 10}, {7, 0, 1, 99, 8}, {99, 1, 0, 2, 99}, {99, 99, 2, 0, 2}, {10, 8, 99, 2, 0}};
 	// {{0, 1, 99, 99, 99}, {1, 0, 1, 99, 99}, {99, 1, 0, 1, 99}, {99, 99, 1, 0, 1}, {99, 99, 99, 1, 0}};
 	// {{0, 4, 50}, {4, 0, 1}, {50, 1, 0}};
 	// {{0, 1, 99}, {1, 0, 1}, {99, 1, 0}};
-	private int n = 5;
-	public static int adjMat[][] = new int[][] { { 0, 7, 99, 99, 10 }, { 7, 0, 1, 99, 8 }, { 99, 1, 0, 2, 99 },
-			{ 99, 99, 2, 0, 2 }, { 10, 8, 99, 2, 0 } };
-	public static int oldTableMat[][] = new int[][] { { 0, 7, 99, 99, 10 }, { 7, 0, 1, 99, 8 }, { 99, 1, 0, 2, 99 },
-			{ 99, 99, 2, 0, 2 }, { 10, 8, 99, 2, 0 } };
-	private char nextRouter[][] = new char[5][5];
+	static private int n = 5;
+	public static int adjMat[][] = new int[][] { 
+		{ 0, 7, 99, 99, 10 }, 
+		{ 7, 0, 1, 99, 8 }, 
+		{ 99, 1, 0, 2, 99 },
+		{ 99, 99, 2, 0, 2 }, 
+		{ 10, 8, 99, 2, 0 } };
+	public static int oldTableMat[][] = new int[n][n];
+	private char nextRouter[][] = new char[n][n];
 	private String s = "ABCDE";
 
 	public void printRoutingTable() {
@@ -26,6 +29,7 @@ public class DV {
 	public void printInitialRoutingTable() {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
+				oldTableMat[i][j] = adjMat[i][j];
 				if (oldTableMat[i][j] != 99) {
 					nextRouter[i][j] = s.charAt(j);
 				} else {
@@ -53,11 +57,6 @@ public class DV {
 		while (true) {
 			time++;
 			int newTableMat[][] = new int[n][n];
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					newTableMat[i][j] = oldTableMat[i][j];
-				}
-			}
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					if (i == j) {
@@ -99,7 +98,7 @@ public class DV {
 	}
 
 	public static void main(String[] args) {
-		DV operation = new DV();
+		DVR operation = new DVR();
 		operation.printInitialRoutingTable();
 		operation.printAfterUpdateRoutingTable();
 		while (true) {
@@ -125,4 +124,5 @@ public class DV {
 
 		}
 	}
+	
 }
