@@ -66,9 +66,9 @@ public:
     void printFinalRoutingTable() {
         cout<<"Final Routing Table For Each Router is:"<<endl;
         for (int i = 0; i < n; i++) {
-            cout<<"Router "<<s[i];
+            cout<<"Router "<<s[i]<<endl;
             for (int j = 0; j < n; j++) {
-                cout<<nextRouter[i][j]<<" "<<distance[i][j];
+                cout<<nextRouter[i][j]<<" "<<distance[i][j]<<endl;
             }
             cout<<endl;
         }
