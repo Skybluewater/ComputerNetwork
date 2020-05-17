@@ -1,5 +1,6 @@
-# https://www.jianshu.com/p/8ace17859bd1
-class LSR:
+import os
+
+class LS:
     n = 5
     adjMat = [[0, 7, 99, 99, 10],
               [7, 0, 1, 99, 8],
@@ -8,7 +9,7 @@ class LSR:
               [10, 8, 99, 2, 0]]
     distance = [[0] * 5 for i in range(5)]
     nextRouter = [[0] * 5 for i in range(5)]
-    s = "ABCDE"
+    s = "ABCDEFGHIJKLMN"
 
     def Initialize(self):
         for i in range(self.n):
@@ -64,10 +65,11 @@ class LSR:
 
 
 if __name__ == '__main__':
-    operation = LSR()
+    operation = LS()
     operation.Initialize()
     operation.printInitialLinkState()
     print("Shortest Way Of Each Step For Each Router is:")
     for i in range(operation.n):
         operation.SPF(i)
     operation.printFinalRoutingTable()
+    os.system('pause')

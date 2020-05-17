@@ -1,3 +1,5 @@
+import os
+
 class ByteStuffing:
     flagString = "7E"
     insertString = "1B"
@@ -7,9 +9,9 @@ class ByteStuffing:
         sendFrame = self.flagString + dataStr + self.flagString
         flagLen = len(self.flagString)
         sendFrameLen = len(sendFrame)
-        print("帧起始标志：" + sendFrame[: flagLen])
-        print("帧数据信息：" + sendFrame[flagLen: sendFrameLen - flagLen])
-        print("帧结束标志：" + sendFrame[sendFrameLen - flagLen:])
+        print("Frame start flag: " + sendFrame[: flagLen])
+        print("Frame data info: " + sendFrame[flagLen: sendFrameLen - flagLen])
+        print("Frame end flag: " + sendFrame[sendFrameLen - flagLen:])
 
         insertLen = len(self.insertString)
         i = flagLen
@@ -19,7 +21,7 @@ class ByteStuffing:
                 i = i + insertLen + flagLen
             i += 1
 
-        print("字节填充后的发送帧：" + sendFrame)
+        print("Send frame after ByteStuffing: " + sendFrame)
         print()
         return sendFrame
 
@@ -32,10 +34,11 @@ class ByteStuffing:
                 receiveFrame = receiveFrame[: i - insertLen] + receiveFrame[i:]
                 i += flagLen
             i += 1
-        print("字节删除后的接收帧：" + receiveFrame)
+        print("Receive frame after deleting byte: " + receiveFrame)
 
 
 if __name__ == '__main__':
     operation = ByteStuffing()
     frameStr = operation.Send()
     operation.Receive(frameStr)
+    os.system('pause')

@@ -1,15 +1,17 @@
+import os
+
 class BitStuffing:
     flagString = "01111110"
     insertString = "11111"
 
     def Send(self):
-        dataStr = input("请输入待发送的数据信息二进制比特串: ")
+        dataStr = "01101111111111111111111111111110"
         sendFrame = self.flagString + dataStr + self.flagString
         flagLen = len(self.flagString)
         sendFrameLen = len(sendFrame)
-        print("帧起始标志：" + sendFrame[: flagLen])
-        print("帧数据信息：" + sendFrame[flagLen: sendFrameLen - flagLen])
-        print("帧结束标志：" + sendFrame[sendFrameLen - flagLen:])
+        print("Frame start flag: " + sendFrame[: flagLen])
+        print("Frame data info: " + sendFrame[flagLen: sendFrameLen - flagLen])
+        print("Frame end flag: " + sendFrame[sendFrameLen - flagLen:])
 
         insertLen = len(self.insertString)
         i = flagLen
@@ -20,7 +22,7 @@ class BitStuffing:
             else:
                 i += 1
 
-        print("比特填充后的发送帧：" + sendFrame)
+        print("Send frame after BitStuffing: " + sendFrame)
         print()
         return sendFrame
 
@@ -34,10 +36,11 @@ class BitStuffing:
                 i = i + insertLen
             else:
                 i += 1
-        print("比特删除后的接收帧：" + receiveFrame)
+        print("Receive frame after deleting bit: " + receiveFrame)
 
 
 if __name__ == '__main__':
     operation = BitStuffing()
     frameStr = operation.Send()
     operation.Receive(frameStr)
+    os.system('pause')

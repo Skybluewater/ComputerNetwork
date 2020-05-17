@@ -7,9 +7,9 @@ public class ByteStuffing {
 		String sendFrame = flagString + dataStr + flagString;
 		int flagLen = flagString.length();
 		int sendFrameLen = sendFrame.length();
-		System.out.println("帧起始标志：" + sendFrame.substring(0, flagLen));
-		System.out.println("帧数据信息：" + sendFrame.substring(flagLen, sendFrameLen - flagLen));
-		System.out.println("帧结束标志：" + sendFrame.substring(sendFrameLen - flagLen));
+		System.out.println("Frame start flag: " + sendFrame.substring(0, flagLen));
+		System.out.println("Frame data info: " + sendFrame.substring(flagLen, sendFrameLen - flagLen));
+		System.out.println("Frame end flag: " + sendFrame.substring(sendFrameLen - flagLen));
 		
 		int insertLen = insertString.length();
 		for (int i = flagLen; i < (sendFrame.length() - flagLen); i++) {
@@ -19,7 +19,7 @@ public class ByteStuffing {
 			}
 		}
 		
-		System.out.println("字节填充后的发送帧：" + sendFrame);
+		System.out.println("Send frame after ByteStuffing: " + sendFrame);
 		System.out.println();
 		return sendFrame;
 	}
@@ -33,7 +33,7 @@ public class ByteStuffing {
 				i = i + flagLen;
 			}
 		}	
-		System.out.println("字节删除后的接收帧：" + receiveFrame);
+		System.out.println("Receive frame after deleting byte: " + receiveFrame);
 	}
 	
 	public static void main(String[] args) {

@@ -1,11 +1,11 @@
 import java.util.Scanner;
 
-public class DVR {
+public class DV {
 	// {{0, 7, 99, 99, 10}, {7, 0, 1, 99, 8}, {99, 1, 0, 2, 99}, {99, 99, 2, 0, 2}, {10, 8, 99, 2, 0}};
 	// {{0, 1, 99, 99, 99}, {1, 0, 1, 99, 99}, {99, 1, 0, 1, 99}, {99, 99, 1, 0, 1}, {99, 99, 99, 1, 0}};
 	// {{0, 4, 50}, {4, 0, 1}, {50, 1, 0}};
 	// {{0, 1, 99}, {1, 0, 1}, {99, 1, 0}};
-	static private int n = 5;
+	private static int n = 5;
 	public static int adjMat[][] = new int[][] { 
 		{ 0, 7, 99, 99, 10 }, 
 		{ 7, 0, 1, 99, 8 }, 
@@ -14,7 +14,7 @@ public class DVR {
 		{ 10, 8, 99, 2, 0 } };
 	public static int oldTableMat[][] = new int[n][n];
 	private char nextRouter[][] = new char[n][n];
-	private String s = "ABCDE";
+	private String s = "ABCDEFGHIJKLMN";
 
 	public void printRoutingTable() {
 		for (int i = 0; i < n; i++) {
@@ -98,7 +98,7 @@ public class DVR {
 	}
 
 	public static void main(String[] args) {
-		DVR operation = new DVR();
+		DV operation = new DV();
 		operation.printInitialRoutingTable();
 		operation.printAfterUpdateRoutingTable();
 		while (true) {
@@ -109,16 +109,16 @@ public class DVR {
 				break;
 			} else if (a == 1) {
 				System.out.println(
-						"Please input a string as format 'num1-num2 distance' such as '1-2 8'(no '') to upgrade a pair of nodes:");
-				String more = scanner.nextLine();
-				String s = scanner.nextLine();
-				int num1 = s.charAt(0) - '0';
-				int num2 = s.charAt(2) - '0';
-				int distance = Integer.parseInt(s.substring(4));
+						"Please input as format 'num1 num2 distance' such as '0 1 8'(no '') to upgrade a pair of nodes:");
+				int num1, num2, distance;
+				num1 = scanner.nextInt();
+				num2 = scanner.nextInt();
+				distance = scanner.nextInt();
 				adjMat[num1][num2] = distance;
 				adjMat[num2][num1] = distance;
 				oldTableMat[num1][num2] = distance;
 				oldTableMat[num2][num1] = distance;
+				System.out.println();
 				operation.printAfterUpdateRoutingTable();
 			}
 

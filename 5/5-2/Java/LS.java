@@ -1,6 +1,6 @@
 //https://www.jianshu.com/p/8ace17859bd1
 
-public class LSR {
+public class LS {
 	public static int n = 5;
 	private int adjMat[][] = new int[][] { 
 		{ 0, 7, 99, 99, 10 }, 
@@ -10,7 +10,7 @@ public class LSR {
 		{ 10, 8, 99, 2, 0 } };
 	private int distance[][] = new int[n][n];
 	private int nextRouter[][] = new int[n][n];
-	private String s = "ABCDE";
+	private String s = "ABCDEFGHIJKLMN";
 
 	public void Initialize() {
 		for (int i = 0; i < n; i++) {
@@ -89,7 +89,7 @@ public class LSR {
 	}
 
 	public static void main(String[] args) {
-		LSR operation = new LSR();
+		LS operation = new LS();
 		operation.Initialize();
 		operation.printInitialLinkState();
 		System.out.println("Shortest Way Of Each Step For Each Router is:");

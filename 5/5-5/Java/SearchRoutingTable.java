@@ -8,13 +8,14 @@
 import java.util.Scanner;
 
 public class SearchRoutingTable {
-	private static int n = 3;
+	private static int n = 4;
 	private int IPAddress[][] = new int[n][4];
 	private int subnetMask[][] = new int[n][4];
 	private String nextHop[] = new String[] { "Interface0", "Interface1", "Router1", "Router2" };
 
-	private int IPSubAddress[][] = new int[][] { { 135, 46, 56, 0 }, { 136, 46, 60, 0 }, { 192, 53, 40, 0 } };
-	private int prefix[] = new int[] { 22, 22, 23 };
+	private int IPSubAddress[][] = new int[][] { { 135, 46, 56, 0 }, { 136, 46, 60, 0 }, { 192, 53, 40, 0 },
+			{ 0, 0, 0, 0 } };
+	private int prefix[] = new int[] { 22, 22, 23, 0 };
 
 	public void Initialize() {
 		for (int i = 0; i < n; i++) {
@@ -37,8 +38,8 @@ public class SearchRoutingTable {
 	public void printRoutingTable() {
 		System.out.println("Routing Table:");
 		System.out.println("IPAddress/Prefix\tNextHop");
-		for (int i = 0; i < n + 1; i++) {
-			if (i == n) {
+		for (int i = 0; i < n; i++) {
+			if (i == n - 1) {
 				System.out.printf("0/0\t\t\t");
 			} else {
 				System.out.printf("%d", IPSubAddress[i][0]);
@@ -55,7 +56,7 @@ public class SearchRoutingTable {
 	public void Search(String string) {
 		String subIPAddress[] = string.split("\\.");
 		int maxPrefixPos = n;
-		int maxPrefixLen = 0;
+		int maxPrefixLen = -1;
 		for (int i = 0; i < n; i++) {
 			boolean flag = true;
 			for (int j = 0; j < 4; j++) {

@@ -1,3 +1,5 @@
+import os
+
 class CheckSum:
     headString = "4500003CB53040008006E251C0A80168D83AC8EE"
 
@@ -78,3 +80,4 @@ if __name__ == '__main__':
     operation = CheckSum()
     operation.Print()
     operation.calculateCheckSum()
+    os.system("pause")

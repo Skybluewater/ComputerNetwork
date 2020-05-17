@@ -1,4 +1,6 @@
-class DVR:
+import os
+
+class DV:
     n = 5
     adjMat = [[0, 7, 99, 99, 10],
               [7, 0, 1, 99, 8],
@@ -7,7 +9,7 @@ class DVR:
               [10, 8, 99, 2, 0]]
     oldTableMat = [[0] * 5 for i in range(5)]
     nextRouter = [[' '] * 5 for i in range(5)]
-    s = "ABCDE"
+    s = "ABCDEFGHIJKLMN"
 
     def printRoutingTable(self):
         for i in range(self.n):
@@ -66,20 +68,25 @@ class DVR:
                 break
 
 if __name__ == '__main__':
-    operation = DVR()
+    operation = DV()
     operation.printInitialRoutingTable()
     operation.printAfterUpdateRoutingTable()
     while(True):
-        a = input("Enter 0 to exit or enter 1 to upgrade topology network: ")
+        print("Enter 0 to exit or enter 1 to upgrade topology network: ")
+        a = input()
         if a == "0":
             break
         elif a == "1":
-            s = input("Please input a string as format 'num1-num2 distance' such as '1-2 8'(no '') to upgrade a pair of nodes:\n")
-            num1 = int(s[0])
-            num2 = int(s[2])
-            distance = int(s[4: ])
+            print("Please input as format 'num1 num2 distance' such as '0 1 8'(no '') to upgrade a pair of nodes:")
+            string = input()
+            subStr = string.split(" ")
+            num1 = int(subStr[0])
+            num2 = int(subStr[1])
+            distance = int(subStr[2])
             operation.adjMat[num1][num2] = distance
             operation.adjMat[num2][num1] = distance
             operation.oldTableMat[num1][num2] = distance
             operation.oldTableMat[num2][num1] = distance
+            print()
             operation.printAfterUpdateRoutingTable()
+    os.system('pause')

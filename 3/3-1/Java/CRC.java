@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class CRC {
 	private String gxStr = "10001000000100001";
@@ -10,10 +9,8 @@ public class CRC {
 		for (int i = 0; i < divisorLen - 1; i++) {
 			dividendStr += "0";
 		}
-		// System.out.println(dividendStr);
 		char str1[] = dividendStr.toCharArray();
 		char str2[] = divisorStr.toCharArray();
-
 		for (int i = 0; i < dividendLen; i++) {
 			if (str1[i] == '1') {
 				str1[i] = '0';
@@ -32,10 +29,7 @@ public class CRC {
 	}
 
 	public String Send() {
-		System.out.print("请输入待发送的数据信息二进制比特串: ");
-		Scanner sc = new Scanner(System.in);
-		String dataStr = sc.nextLine();
-		sc.close();
+		String dataStr = "01100000000000111110000000000110";
 		System.out.println("待发送的数据信息二进制比特串为：" + dataStr);
 		System.out.println("CRC-CCITT对应的二进制比特串为：" + gxStr);
 
@@ -43,7 +37,7 @@ public class CRC {
 
 		String crcStr = remainderStr;
 		String sendFrameStr = dataStr + remainderStr;
-
+		
 		System.out.println("生成的CRC-Code为: " + crcStr);
 		System.out.println("带校验和的发送帧为: " + sendFrameStr);
 		System.out.println();
@@ -53,12 +47,14 @@ public class CRC {
 	public void Receive(String sendFrameStr) {
 		int sendFrameLen = sendFrameStr.length();
 		int gxLen = gxStr.length();
+
 		String dataStr = sendFrameStr.substring(0, sendFrameLen - gxLen + 1);
 		String crcStr = sendFrameStr.substring(sendFrameLen - gxLen + 1);
 		System.out.println("接收的数据信息二进制比特串为：" + dataStr);
 		System.out.println("生成的CRC-Code为: " + crcStr);
 
 		String remainderStr = GetRemainderStr(sendFrameStr, gxStr);
+		
 		long remainder = Long.parseLong(remainderStr, 2);
 		System.out.println("余数为: " + remainder);
 		if (remainder == 0) {
@@ -75,3 +71,4 @@ public class CRC {
 	}
 
 }
+

@@ -1,11 +1,13 @@
+import os
+
 class SearchRoutingTable:
-    n = 3
-    IPAddress = [[0] * 4 for i in range(3)]
-    subnetMask = [[0] * 4 for i in range(3)]
+    n = 4
+    IPAddress = [[0] * 4 for i in range(4)]
+    subnetMask = [[0] * 4 for i in range(4)]
     nextHop = ["Interface0", "Interface1", "Router1", "Router2"]
 
-    IPSubAddress = [[135, 46, 56, 0], [136, 46, 60, 0], [192, 53, 40, 0]]
-    prefix = [22, 22, 23]
+    IPSubAddress = [[135, 46, 56, 0], [136, 46, 60, 0], [192, 53, 40, 0], [0, 0, 0, 0]]
+    prefix = [22, 22, 23, 0]
 
     def Initialize(self):
         for i in range(self.n):
@@ -22,9 +24,9 @@ class SearchRoutingTable:
     def printRoutingTable(self):
         print("Routing Table:")
         print("IPAddress/Prefix\tNextHop")
-        for i in range(self.n + 1):
-            if i == self.n:
-                print("0/0\t\t\t\t\t", end='')
+        for i in range(self.n):
+            if i == (self.n - 1):
+                print("0/0\t\t\t", end='')
             else:
                 print("%d" % self.IPSubAddress[i][0], end='')
                 for j in range(1, 4):
@@ -36,7 +38,7 @@ class SearchRoutingTable:
     def Search(self, string):
         subIPAddress = string.split('.')
         maxPrefixPos = self.n
-        maxPrefixLen = 0
+        maxPrefixLen = -1
         for i in range(self.n):
             flag = True
             for j in range(4):
@@ -64,3 +66,4 @@ if __name__ == '__main__':
     operation.Initialize()
     operation.printRoutingTable()
     operation.Search(string)
+    os.system("pause")

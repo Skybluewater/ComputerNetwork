@@ -1,3 +1,5 @@
+import os
+
 class CRC:
     gxStr = "10001000000100001"
 
@@ -27,7 +29,7 @@ class CRC:
         return remainderStr
 
     def Send(self):
-        dataStr = input("请输入待发送的数据信息二进制比特串: ")
+        dataStr = "01100000000000111110000000000110";
         print("待发送的数据信息二进制比特串为：" + dataStr)
         print("CRC-CCITT对应的二进制比特串为：" + self.gxStr)
 
@@ -50,6 +52,7 @@ class CRC:
         print("生成的CRC-Code为: " + crcStr)
 
         remainderStr = self.GetRemainderStr(sendFrameStr, self.gxStr)
+
         remainder = int(remainderStr, 2)
         print("余数为: ", remainder)
         if remainder == 0:
@@ -62,3 +65,4 @@ if __name__ == '__main__':
     operation = CRC()
     frameStr = operation.Send()
     operation.Receive(frameStr)
+    os.system('pause')
