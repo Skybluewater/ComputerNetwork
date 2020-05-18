@@ -11,13 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UDPReceiver {
-	private int sendPort = 8888;
-	private int recePort = 9999;
+	private int senderPort = 9999;
+	private int receiverPort = 8888;
 	DatagramSocket ds;
 
 	private int dataLen = 20;
 	private int sendFrameLen = 1;
-	private int receFrameLen = 25;
+	private int receiveFrameLen = 25;
 	private int serialPos = 0;
 	private int dataStartPos = 1;
 	private int crcStartPos = 21;
@@ -65,47 +65,47 @@ public class UDPReceiver {
 
 	public void Receive() throws Exception {
 		try {
-			ds = new DatagramSocket(sendPort);
+			ds = new DatagramSocket(receiverPort);
 			InetAddress address = InetAddress.getByName(null);
 
-			OutputStream os = new FileOutputStream(new File("D:\\desktop\\copyText.txt"));
+			OutputStream os = new FileOutputStream(new File("ReceiveText.txt"));
 
 			while (true) {
-				byte[] receFrame = new byte[receFrameLen];
-				DatagramPacket dp = new DatagramPacket(receFrame, receFrame.length);
+				byte[] receiveFrame = new byte[receiveFrameLen];
+				DatagramPacket dp = new DatagramPacket(receiveFrame, receiveFrame.length);
 				ds.receive(dp);
 
-				if (receFrame[isEndPos] == 1) {
-					System.out.println("文件全部接收完毕");
+				if (receiveFrame[isEndPos] == 1) {
+					System.out.println("Receive the file finished.");
 					break;
 				}
 				
-				int serial = receFrame[serialPos];
+				int serial = receiveFrame[serialPos];
 
 				int index = dataStartPos;
 				for (; index < dataStartPos + dataLen; index++) {
-					if (receFrame[index] == 0)
+					if (receiveFrame[index] == 0)
 						break;
 				}
 
 				byte[] data = new byte[index - dataStartPos + 2];
-				System.arraycopy(receFrame, dataStartPos, data, 0, index - dataStartPos);
-				System.arraycopy(receFrame, crcStartPos, data, index - dataStartPos, 2);
+				System.arraycopy(receiveFrame, dataStartPos, data, 0, index - dataStartPos);
+				System.arraycopy(receiveFrame, crcStartPos, data, index - dataStartPos, 2);
 				String binaryStr = getBinaryString(data);
 				String crcStr = getCRCString(binaryStr);
 
 				if (Integer.parseInt(crcStr, 2) == 0) {
 					Date t = new Date();
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					System.out.println("当前时间为：" + df.format(t));
-					System.out.println("frame_expected的值为：" + frameExpected);
-					System.out.println("接收帧数据正确，接收帧的发送帧序号：" + serial);
+					System.out.println("Current time: " + df.format(t));
+					System.out.println("frame_expected: " + frameExpected);
+					System.out.println("Data of the frame is right, serial is: " + serial);
 
 					byte[] sendFrame = new byte[sendFrameLen];
 					sendFrame[0] = (byte) (1 - frameExpected);
-					DatagramPacket dp2 = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+					DatagramPacket dp2 = new DatagramPacket(sendFrame, sendFrame.length, address, senderPort);
 					ds.send(dp2);
-					System.out.println("已发送回确认帧，确认帧的确认序号为：" + (1 - frameExpected));
+					System.out.println("Sending ack, ack is: " + (1 - frameExpected));
 					System.out.println();	
 					
 					if ((byte) frameExpected == serial) {
@@ -115,8 +115,8 @@ public class UDPReceiver {
 				} else {
 					Date t = new Date();
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					System.out.println("当前时间为：" + df.format(t));
-					System.out.println("接收帧数据错误，不返回确认帧");
+					System.out.println("Curremt time: " + df.format(t));
+					System.out.println("Data of the frame is wrong, doesn't send ack.");
 					System.out.println();
 				}
 
@@ -133,6 +133,7 @@ public class UDPReceiver {
 	}
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("Be ready to receive file...");
 		UDPReceiver operation = new UDPReceiver();
 		operation.Receive();
 	}

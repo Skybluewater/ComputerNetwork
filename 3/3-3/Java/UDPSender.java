@@ -13,13 +13,13 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class UDPSender {
-	private int sendPort = 9999;
-	private int recePort = 8888;
+	private int senderPort = 9999;
+	private int receiverPort = 8888;
 	DatagramSocket ds;
 
 	private int dataLen = 20;
 	private int sendFrameLen = 25;
-	private int receFramelen = 1;
+	private int receiveFrameLen = 1;
 	private int serialPos = 0;
 	private int dataStartPos = 1;
 	private int crcStartPos = 21;
@@ -79,24 +79,24 @@ public class UDPSender {
 	public boolean waitForEvent() throws Exception {
 		boolean flag = true;
 		try {
-			byte receFrame[] = new byte[receFramelen];
-			DatagramPacket dp = new DatagramPacket(receFrame, receFrame.length);
+			byte receiveFrame[] = new byte[receiveFrameLen];
+			DatagramPacket dp = new DatagramPacket(receiveFrame, receiveFrame.length);
 
 			try {
 				ds.receive(dp);
 			} catch (SocketTimeoutException e) {
 				Date t = new Date();
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				System.out.println("当前时间为：" + df.format(t));
-				System.out.println("接收超时！");
+				System.out.println("Current time: " + df.format(t));
+				System.out.println("Reveiving ack overtime, be ready to resend.");
 				flag = false;
 			}
 
 			if (flag == true) {
 				Date t = new Date();
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				System.out.println("当前时间为：" + df.format(t));
-				System.out.println("接收到确认帧，确认帧的确认序号为：" + receFrame[0]);
+				System.out.println("Current time: " + df.format(t));
+				System.out.println("Received ack, ack is: " + receiveFrame[0]);
 			}
 			System.out.println();
 
@@ -109,27 +109,27 @@ public class UDPSender {
 	public void Print(int method) {
 		Date t = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("当前时间为：" + df.format(t));
+		System.out.println("Current time: " + df.format(t));
 
-		System.out.println("next_frame_to_send的值为：" + nextFrameToSend);
-		System.out.println("正在发送帧的编号为：" + seq);
+		System.out.println("next_frame_to_send: " + nextFrameToSend);
+		System.out.println("seq: " + seq);
 		if (method == right) {
-			System.out.println("模拟正确发送");
+			System.out.println("Simulate sending right.");
 		} else if (method == error) {
-			System.out.println("模拟传输出错");
+			System.out.println("Simulate sending wrong.");
 		} else if (method == lost) {
-			System.out.println("模拟帧丢失");
+			System.out.println("Simulate sending lost.");
 		}
 		System.out.println();
 	}
 
 	public void Send() throws Exception {
 		try {
-			ds = new DatagramSocket(sendPort);
-			ds.setSoTimeout(2000);
+			ds = new DatagramSocket(senderPort);
+			ds.setSoTimeout(3000);
 			InetAddress address = InetAddress.getByName(null);
 
-			InputStream is = new FileInputStream(new File("D:\\desktop\\text.txt"));
+			InputStream is = new FileInputStream(new File("SendText.txt"));
 			int flag = 0;
 			byte[] data = new byte[dataLen];
 			while (true) {
@@ -137,9 +137,9 @@ public class UDPSender {
 				if (flag == -1) {
 					byte[] sendFrame = new byte[sendFrameLen];
 					sendFrame[isEndPos] = 1;
-					DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+					DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, receiverPort);
 					ds.send(dp);
-					System.out.println("文件全部发送完毕");
+					System.out.println("Send the file finished.");
 					break;
 				}
 
@@ -149,7 +149,7 @@ public class UDPSender {
 				System.arraycopy(data, 0, realData, 0, flag);
 				String binaryStr = getBinaryString(realData);
 				String crcStr = getCRCString(binaryStr);
-
+				
 				byte[] sendFrame = new byte[sendFrameLen];
 				sendFrame[serialPos] = (byte) nextFrameToSend;
 
@@ -170,7 +170,7 @@ public class UDPSender {
 					if ((filterSeq - firstError) % filterError == 0) {
 						byte pre = sendFrame[crcEndPos - 1];
 						sendFrame[crcEndPos - 1] = (byte) ((pre + 1) % 128);
-						DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+						DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, receiverPort);
 						ds.send(dp);
 						Print(error);
 						sendFrame[crcEndPos - 1] = pre;
@@ -179,14 +179,14 @@ public class UDPSender {
 						Print(lost);
 						filterSeq++;
 					} else {
-						DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+						DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, receiverPort);
 						ds.send(dp);
 						Print(right);
 						filterSeq++;
 					}
 
 					// 调节传输速度
-					TimeUnit.MILLISECONDS.sleep(500);
+					TimeUnit.MILLISECONDS.sleep(1000);
 
 					mark = waitForEvent();
 					if (mark == true) {
@@ -206,6 +206,7 @@ public class UDPSender {
 	}
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("Be ready to send file...");
 		UDPSender operation = new UDPSender();
 		operation.Send();
 	}

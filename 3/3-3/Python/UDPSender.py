@@ -1,13 +1,13 @@
 import socket
 import time
 import struct
-
+import os
 
 class UDPSender:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    clientAddress = ('127.0.0.1', 9999)
-    serverAddress = ('127.0.0.1', 8888)
-    s.bind(clientAddress)
+    senderAddress = ('127.0.0.1', 9999)
+    receiverAddress = ('127.0.0.1', 8888)
+    s.bind(senderAddress)
 
     dataLen = 20
     nextFrameToSend = 0
@@ -65,43 +65,43 @@ class UDPSender:
         try:
             receiveFrame, address = self.s.recvfrom(1024)
         except Exception:
-            print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-            print("接收超时！")
+            print("Current time: " + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            print("Reveiving ack overtime, be ready to resend.")
             print()
             flag = False
 
         if (flag == True):
-            print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-            print("接收到确认帧，确认帧的确认序号为：%d" % receiveFrame[self.ackPos])
+            print("Current time: " + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            print("Received ack, ack is: %d" % receiveFrame[self.ackPos])
             print()
 
         return flag
 
     def Print(self, method):
-        print("当前时间为：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-        print("next_frame_to_send的值为：%d" % self.nextFrameToSend)
-        print("正在发送帧的编号为：%d" % self.seq)
+        print("Current time: " + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+        print("next_frame_to_send: %d" % self.nextFrameToSend)
+        print("seq: %d" % self.seq)
         if method == self.right:
-            print("模拟正确发送")
+            print("Simulate sending right.")
         elif method == self.error:
-            print("模拟传输出错")
+            print("Simulate sending wrong.")
         elif method == self.lost:
-            print("模拟帧丢失")
+            print("Simulate sending lost.")
         print()
 
     def Send(self):
-        self.s.settimeout(2)
+        self.s.settimeout(3)
         try:
-            f = open("D:\\desktop\\text.txt", 'rb')
+            f = open("SendText.txt", 'rb')
         except IOError:
-            print("不能打开该文件")
+            print("Cant't open the file.")
 
         while True:
             data = f.read(self.dataLen)
 
             if str(data) == "b''":
-                self.s.sendto('end'.encode('utf-8'), self.serverAddress)
-                print("文件全部发送完毕")
+                self.s.sendto('end'.encode('utf-8'), self.receiverAddress)
+                print("Send the file finished.")
                 break
             else:
                 self.seq += 1
@@ -124,26 +124,28 @@ class UDPSender:
                         self.Print(self.error)
                         self.filterSeq += 1
                         newSendFrame = sendFrame[: -1] + struct.pack('B', wrong)
-                        self.s.sendto(newSendFrame, self.serverAddress)
+                        self.s.sendto(newSendFrame, self.receiverAddress)
                     elif ((self.filterSeq - self.firstLost) % self.filterLost == 0):
                         self.Print(self.lost)
                         self.filterSeq += 1
                     else:
                         self.Print(self.right)
                         self.filterSeq += 1
-                        self.s.sendto(sendFrame, self.serverAddress)
+                        self.s.sendto(sendFrame, self.receiverAddress)
 
                     mark = self.waitForEvent()
                     if (mark == True):
                         self.nextFrameToSend = (self.nextFrameToSend + 1) % 2
 
                     # 调节传输速度
-                    time.sleep(0.5)
+                    time.sleep(1)
 
         f.close()
         self.s.close()
 
 
 if __name__ == '__main__':
+    print("Be ready to send file...")
     operation = UDPSender()
     frameStr = operation.Send()
+    os.system("pause")

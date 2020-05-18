@@ -1,0 +1,30 @@
+int main(
+{
+	int size = 20;
+	char *buffer = new char[size];
+
+	ifstream in("test.txt");
+	ofstream out("write.txt");
+
+	while (true)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			buffer[i] = '\a';
+		}
+		in.read(buffer, size);
+		if (in.eof())
+		{
+			int pos = 0;
+			while (buffer[pos] != '\a')
+			{
+				pos++;
+				continue;
+			}
+			out.write(buffer, pos);
+			break;
+		}
+		out.write(buffer, size);
+	}
+	return 0;
+}
