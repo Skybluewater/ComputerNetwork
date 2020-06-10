@@ -1,0 +1,6 @@
+Java程序与RSR232串口通讯小练手：
+https://www.iteye.com/blog/elkan1788-1463049
+win7 64为下使用rxtx串口通信：
+https://my.oschina.net/baishi/blog/170014
+Eclipse中导入外部jar包步骤：
+https://www.cnblogs.com/1693977889zz/p/7043757.html
