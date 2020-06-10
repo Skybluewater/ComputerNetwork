@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e0be55ab-0ead-47ab-82cc-8848f81ed580" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1d4uo7jlqtYEYmpXqO6WuXjp6ql" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="RunManager">
+    <configuration name="TCPChecksum" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="TCPChecksum" />
+      <module name="TCP" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.TCPChecksum" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1515" height="666" key="GridCell.Tab.0.bottom" timestamp="1591705992824">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="666" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1591705992824" />
+    <state width="1515" height="666" key="GridCell.Tab.0.center" timestamp="1591705992824">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="666" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1591705992824" />
+    <state width="1515" height="666" key="GridCell.Tab.0.left" timestamp="1591705992824">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="666" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1591705992824" />
+    <state width="1515" height="666" key="GridCell.Tab.0.right" timestamp="1591705992824">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="666" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1591705992824" />
+    <state x="452" y="21" key="new project wizard" timestamp="1591696891969">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="452" y="21" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1591696891969" />
+  </component>
+</project>
