@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class UDPHost1 implements Runnable {
-	private static int sendPort = 8888;
-	private static int recePort = 9999;
+	private static int host1_Port = 9999;
+	private static int host2_Port = 8888;
 	private static DatagramSocket ds;
 	private static InetAddress address;
 	private static InputStream is;
@@ -61,7 +61,8 @@ public class UDPHost1 implements Runnable {
 	private static boolean receiveFirstInfo = false;
 
 	private static int readFileFlag = 0;
-
+	private static int overtimeFlag = 0;
+	
 	public int Inc(int k) {
 		if (k < MAX_SEQ) {
 			return k + 1;
@@ -158,13 +159,13 @@ public class UDPHost1 implements Runnable {
 		return false;
 	}
 
+	//接收线程
 	@Override
 	public void run() {
-
 		// TODO Auto-generated method stub
-
 		byte info[] = new byte[infoLen];
-
+		
+		//加载窗口大小的数据到发送缓存
 		for (rank = 0; rank < MAX_SEQ + 1; rank++) {
 			try {
 				readFileFlag = is.read(info);
@@ -191,11 +192,12 @@ public class UDPHost1 implements Runnable {
 			try {
 				DatagramPacket dp = new DatagramPacket(receFrame, receFrame.length);
 				ds.receive(dp);
-				if (receFrame[kindPos] == notHasData) {
+				if (receFrame[kindPos] == notHasData) {//没有数据，只有确认，对方数据已经接收完毕
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					System.out.println("Current time: " + df.format(new Date()));
 					System.out.println("Receive a frame, only has ack, the ack is: " + receFrame[ackPos]);
 					System.out.println();
+					//捎带确认加载发送数据到缓存
 					while (Between(ackExpected, receFrame[ackPos], nextFrameToSend)) {
 						nbuffered = nbuffered - 1;
 						try {
@@ -212,11 +214,11 @@ public class UDPHost1 implements Runnable {
 							System.out.println();
 						}
 					}
-					if (nbuffered == 0 && receiveInfoFinished == true) {
+					if (nbuffered == 0 && receiveInfoFinished == true) {//发送完毕，接收完毕，退出接收线程
 						break;
 					}
-				} else if (receFrame[kindPos] == hasData) {
-					if (receFrame[ackPos] != notHasAck) {
+				} else if (receFrame[kindPos] == hasData) {//有数据，可能有确认，也可能没确认
+					if (receFrame[ackPos] != notHasAck) {//有确认，捎带确认加载发送数据到缓存
 						while (Between(ackExpected, receFrame[ackPos], nextFrameToSend)) {
 							nbuffered = nbuffered - 1;
 							try {
@@ -234,15 +236,16 @@ public class UDPHost1 implements Runnable {
 							}
 						}
 					}
+					//接收帧序号正确且数据正确
 					if (receFrame[seqPos] == frameExpected && isInfoRight(receFrame) == true) {
 						os.write(receFrame, infoStartPos, infoLen);
 						SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						System.out.println("Current time: " + df.format(new Date()));
-						if (receFrame[ackPos] == notHasAck) {
+						if (receFrame[ackPos] == notHasAck) {//没有确认
 							System.out.println(
 									"Receive a frame, both seq and info are right, doesn't has ack, seq | frame_expected are: "
 											+ receFrame[seqPos] + " | " + frameExpected);
-						} else {
+						} else {//有确认
 							System.out.println(
 									"Receive a frame, both seq and info are right, seq | ack | frame_expected are: "
 											+ receFrame[seqPos] + " | " + receFrame[ackPos] + " | " + frameExpected);
@@ -253,16 +256,16 @@ public class UDPHost1 implements Runnable {
 						waitForResend = false;
 						receiveFirstInfo = true;
 
-						if (receFrame[infoFlagPos] == lastInfoFrame) {
+						if (receFrame[infoFlagPos] == lastInfoFrame) {//收到了最后一个数据帧
 							System.out.println("ReceiveFile was received completed.");
 							System.out.println();
-							receiveInfoFinished = true;
-							if (nbuffered == 0) {
+							receiveInfoFinished = true;//表明接收完毕
+							if (nbuffered == 0) {//如果发送缓存为空，不需要再接收了，退出接收线程
 								break;
 							}
 						}
 
-					} else {
+					} else {//接收帧序号和数据不全正确
 						if (waitForResend == true) {
 							continue;
 						}
@@ -280,18 +283,20 @@ public class UDPHost1 implements Runnable {
 					}
 				}
 
-			} catch (Exception e) {
+			} catch (Exception e) {//接收超时，意味帧丢失
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				System.out.println("Current time: " + df.format(new Date()));
 				System.out.println("Receiving is overtime, need to resend!");
 				System.out.println();
+				overtimeFlag++;
 				needToResend = true;
 			}
 
 		}
 
 	}
-
+	
+	//构造发送帧并发送
 	public void fillAndSend(int method) throws Exception {
 		byte sendFrame[] = new byte[frameLen];
 
@@ -313,9 +318,9 @@ public class UDPHost1 implements Runnable {
 		}
 		System.arraycopy(buffer[nextFrameToSend], 0, sendFrame, infoStartPos, infoLen + 2);
 
-		// System.out.println("nbuffered: " + nbuffered);
+		//System.out.println("nbuffered: " + nbuffered);
 
-		if (method == error) {
+		if (method == error) {//模拟传输出错
 			sendFrame[crcLastPos] = (byte) ((sendFrame[crcLastPos] + 1) % 128);
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			System.out.println("Current time: " + df.format(new Date()));
@@ -329,9 +334,9 @@ public class UDPHost1 implements Runnable {
 						+ number[nextFrameToSend]);
 			}
 			System.out.println();
-			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, host2_Port);
 			ds.send(dp);
-		} else if (method == lost) {
+		} else if (method == lost) {//模拟传输丢失
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			System.out.println("Current time: " + df.format(new Date()));
 			System.out.println("ack_expected | next_frame_to_send | frame_expected are: " + ackExpected + " | "
@@ -344,7 +349,7 @@ public class UDPHost1 implements Runnable {
 						+ number[nextFrameToSend]);
 			}
 			System.out.println();
-		} else if (method == right) {
+		} else if (method == right) {//模拟正确传输
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			System.out.println("Current time: " + df.format(new Date()));
 			System.out.println("ack_expected | next_frame_to_send | frame_expected are: " + ackExpected + " | "
@@ -357,33 +362,32 @@ public class UDPHost1 implements Runnable {
 						+ number[nextFrameToSend]);
 			}
 			System.out.println();
-			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, host2_Port);
 			ds.send(dp);
 		}
 
 	}
 
+	//发送线程，调用fillAndSend函数发送
 	public void Send() throws Exception {
 
-		while (nbuffered != 0) {
+		while (nbuffered != 0) {//缓存区不为空
 			if (waitForResend == true) {
 				continue;
 			}
-			if (needToResend == true) {
+			if(waitForResend == true && overtimeFlag % 3 != 0) {
+				continue;
+			}
+			
+			if (needToResend == true) {//重发出错帧后缓存区中的所有帧
 				needToResend = false;
 				nextFrameToSend = ackExpected;
 				for (int i = 1; i <= nbuffered; i++) {
-					if ((filterRank - firstError) % filterError == 0) {
-						fillAndSend(error);
-					} else if ((filterRank - firstLost) % filterLost == 0) {
-						fillAndSend(lost);
-					} else {
-						fillAndSend(right);
-					}
+					fillAndSend(right);//均模拟正确发送
 					filterRank++;
 					nextFrameToSend = Inc(nextFrameToSend);
 					TimeUnit.MILLISECONDS.sleep(500);
-					if (needToResend == true) {
+					if (needToResend == true) {//重发过程中接收超时，又需要重发
 						i = 1;
 						needToResend = false;
 						nextFrameToSend = ackExpected;
@@ -392,6 +396,7 @@ public class UDPHost1 implements Runnable {
 				continue;
 			}
 
+			//needToResend为false的情况
 			if ((filterRank - firstError) % filterError == 0) {
 				fillAndSend(error);
 			} else if ((filterRank - firstLost) % filterLost == 0) {
@@ -405,16 +410,19 @@ public class UDPHost1 implements Runnable {
 
 		}
 
+		//缓冲区为空，表示数据已经发送完毕，根据lastSendAck的取值判断是否一直发送确认帧
 		byte sendFrame[] = new byte[frameLen];
-
 		while (lastSendAck == false) {
 			sendFrame[kindPos] = notHasData;
 			sendFrame[ackPos] = (byte) ((frameExpected + MAX_SEQ) % (MAX_SEQ + 1));
+			if (receiveInfoFinished == true) {//收到最后一个数据帧
+				lastSendAck = true;
+			}
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			System.out.println("Current time: " + df.format(new Date()));
 			System.out.println("Send a frame, only has ack, ack is: " + sendFrame[ackPos]);
 			System.out.println();
-			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, recePort);
+			DatagramPacket dp = new DatagramPacket(sendFrame, sendFrame.length, address, host2_Port);
 			ds.send(dp);
 			TimeUnit.MILLISECONDS.sleep(1000);
 			if (receiveInfoFinished == true) {
@@ -426,9 +434,9 @@ public class UDPHost1 implements Runnable {
 
 	public static void main(String[] args) throws Exception {
 		try {
-			is = new FileInputStream(new File("D:\\desktop\\sendText1.txt"));
-			os = new FileOutputStream(new File("D:\\desktop\\receiveText2.txt"));
-			ds = new DatagramSocket(sendPort);
+			is = new FileInputStream(new File("SendText1.txt"));
+			os = new FileOutputStream(new File("ReceiveText2.txt"));
+			ds = new DatagramSocket(host1_Port);
 			ds.setSoTimeout(2000);
 			address = InetAddress.getByName(null);
 		} catch (Exception e) {

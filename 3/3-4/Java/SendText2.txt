@@ -1,0 +1,15 @@
+public int Inc(int k) {
+		if (k < MAX_SEQ) {
+			return k + 1;
+		} else {
+			return 0;
+		}
+	}
+
+	public boolean Between(int a, int b, int c) {
+		if (((a <= b) && (b < c)) || ((c < a) && (a <= b)) || ((b < c) && (c < a))) {
+			return true;
+		} else {
+			return false;
+		}
+	}

@@ -1,0 +1,10 @@
+for (int i = readFileFlag; i < infoLen; i++) {
+				info[i] = 0;
+			}
+			String crcStr = getCRCString(info, readFileFlag);
+			System.arraycopy(info, 0, buffer[ackExpected], 0, infoLen);
+			buffer[ackExpected][infoLen] = (byte) Integer.parseInt(crcStr.substring(0, 8), 2);
+			buffer[ackExpected][infoLen + 1] = (byte) Integer.parseInt(crcStr.substring(8, 16), 2);
+			number[ackExpected] = rank;
+			rank++;
+			return true;
