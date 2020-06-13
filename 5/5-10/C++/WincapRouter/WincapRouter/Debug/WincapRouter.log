@@ -1,0 +1,16 @@
+﻿  WincapRouter.cpp
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(2,1): warning C4005: “WIN32”: 宏重定义
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp : message : 参见“WIN32”的前一个定义
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(201,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(202,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(203,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(204,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(214,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(215,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(216,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(217,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(222,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(223,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(224,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+D:\Code\VS\WincapRouter\WincapRouter\WincapRouter.cpp(225,13): warning C4244: “=”: 从“unsigned short”转换到“char”，可能丢失数据
+  WincapRouter.vcxproj -> D:\Code\VS\WincapRouter\Debug\WincapRouter.exe
